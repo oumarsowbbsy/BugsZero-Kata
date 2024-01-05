@@ -9,32 +9,49 @@ public class GameRunner {
 
 	private static boolean notAWinner;
 
-	public static void main(String[] args) {
-		Random rand = new Random();
-		playGame(rand);
-		
+	public static void playGame(Random rand) {
+		Game game = initializeGame();
+		playRounds(game, rand);
 	}
 
-	public static void playGame(Random rand) {
-		Game aGame = new Game();
+	/**
+	 * Initialise le jeu en ajoutant les joueurs.
+	 * @return Retourne une instance du jeu initialisée.
+	 */
+	private static Game initializeGame() {
+		Game game = new Game();
+		game.add("Chet");
+		game.add("Pat");
+		game.add("Sue");
+		return game;
+	}
 
-		aGame.add("Chet");
-		aGame.add("Pat");
-		aGame.add("Sue");
-
-
+	/**
+	 * Exécute les tours de jeu jusqu'à ce qu'un gagnant soit trouvé.
+	 * @param game L'instance du jeu.
+	 * @param rand L'instance de Random utilisée pour générer des valeurs aléatoires.
+	 */
+	private static void playRounds(Game game, Random rand) {
+		boolean notAWinner;
 		do {
+			int rollValue = rand.nextInt(5) + 1;
+			game.roll(rollValue);
 
-			aGame.roll(rand.nextInt(5) + 1);
-
-			if (rand.nextInt(9) == 7) {
-				notAWinner = aGame.wrongAnswer();
+			if (isTimeForWrongAnswer(rand)) {
+				notAWinner = game.wrongAnswer();
 			} else {
-				notAWinner = aGame.wasCorrectlyAnswered();
+				notAWinner = game.wasCorrectlyAnswered();
 			}
-
-
-
 		} while (notAWinner);
 	}
+
+	/**
+	 * Détermine aléatoirement si le prochain événement doit être une mauvaise réponse.
+	 * @param rand L'instance de Random utilisée pour générer des valeurs aléatoires.
+	 * @return Vrai si le moment est choisi pour une mauvaise réponse, faux sinon.
+	 */
+	private static boolean isTimeForWrongAnswer(Random rand) {
+		return rand.nextInt(9) == 7;
+	}
+
 }
